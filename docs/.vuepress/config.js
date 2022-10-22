@@ -9,7 +9,7 @@ module.exports = {
     lastUpdated: '更新时间', // string | boolean
     nav: [
       { text: '首页', link: '/' },
-      { text: 'Java', link: '/Java'
+      { text: 'Java', link: '/Java/'
         // items: [
         //   { text: 'Java基础', link: '/Java/Java基础/' },
         //   { text: 'Java容器', link: '/Java/Java容器/' },

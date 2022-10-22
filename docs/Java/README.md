@@ -16,5 +16,5 @@ publish: true
 <!-- more -->
 
 ::: warning 说明
-这readme你随便写吧
+Hello Java!
 :::
