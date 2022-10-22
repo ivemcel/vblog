@@ -10,10 +10,15 @@ tags:
 author: ivem
 publish: true
 ---
+### 导图总览
+
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1Java%E5%AE%B9%E5%99%A8.png" alt="1Java容器" style="zoom:37%;" />
+
 **List：存储的元素是有序(元素存入和取出顺序相同)、可重复的，可存储多个null。**
 **Set：存储的元素是无序(元素存入和取出顺序不一定相同)、不可重复的，只能存储一个null。**
 **Map：使用键值对的方式对元素进行存储，key是无序且不重复的，每个键最多映射到一个值。**
 **若无特别说明，源码都是用的JDK1.8。**
+
 ### ArrayList
 **扩容方式：**ArrayList中维护了一个Object类型的数组elementData`transient Object[] elementData` ，当创建ArrayList对象时，如果使用的是无参构造器，则初始 elementData对象扩容为10，再次扩容的话，直接扩容为elementData长度的1.5倍，10→15→22...；如果使用的是指定大小的构造器，则初始elementData容量为指定大小，如果需要扩容，则直接扩容为elementData长度的1.5倍。
 数组的元素在内存中是连续存储的，改查快。

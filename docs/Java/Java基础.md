@@ -10,7 +10,13 @@ tags:
 author: ivem
 publish: true
 ---
+
+#### 导图总览
+
+![java基础](https://raw.githubusercontent.com/ivemcel/pictures/main/java%E5%9F%BA%E7%A1%80.png)
+
 ### Java基本特性
+
 **面向过程**把问题分解为很多个小步骤(模块化)，然后用函数把这些步骤一步一步实现，使用的时候一个一个依次调用就行了。**面向对象**是把构成的问题抽象为各个对象，然后给对象赋一些属性和方法，然后让每个对象去执行自己的方法，去解决问题。
 **封装**：提供对外访问的接口。封装将类的信息隐藏在类内部（设置属性是private类型），不允许外部程序直接访问，但允许通过该类的方法实现对隐藏信息的操作和访问。 
 **继承**：继承父类非私有属性和方法。新类继承父类的非私有属性和方法，扩展新的能力，提高程序的复用性和维护性。在Java中，类之间是单继承的，一个类只能有一个直接父类，而父类可以有多个子类。原因是为了简单安全。当类可以多继承类时，被继承的不同的父类可能会有同名同参的方法，如果子类也没有重写这个同名同参的方法，则在子类的实例调用这个方法的时候就会出现冲突。比如class A继承了class B 和class C， 但是 class B和class C中有一个同名同参的方法method，且在A中并没有重写方法method，那在A的实例中调用method方法就会出现冲突，jvm就会不知道到底该调用哪一个方法。
@@ -710,7 +716,7 @@ JDK动态代理是利用反射机制生成一个实现代理接口的匿名类�
    - 获取构造器: final Constructor<?> cons = cl.getConstructor(constructorParams);
    - 创建代理对象: cons.newInstance(new Object[]{h});
 - 当代理对象生成后，最后由InvocationHandler的invoke()方法调用目标方法:
-```java
+​```java
 public class AgentHandler implements InvocationHandler {
     private Object obj;
 
@@ -778,4 +784,6 @@ public static void main(String[] args) {
 - 简单工厂模式指一个工厂对象创建实例，适用于工厂类负责创建对象较少的情况。例如Spring中的BeanFactory使用简单工厂模式，产生bean对象。
 - 工厂方法模式指定义一个创建对象的接口，让接口的实现类决定创建哪种对象，让类的实例化推迟到子类中进行。例如，Spring的FactoryBean接口的getObject方法也是工厂方法。
 - 抽象工厂模式指提供一个创建一系列相关或相互依赖对象的接口，无需指定它们的具体类。例如java.sql.Connection接口。
+
+<Vssue />
 
