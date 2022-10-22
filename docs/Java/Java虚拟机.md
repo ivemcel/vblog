@@ -27,11 +27,12 @@ stackOverflowError：若栈内存不允许动态扩展，当线程请求的栈�
 OutOfMemoryError：若栈内存大小允许动态扩展，虚拟机栈进行动态扩展时无法申请到足够的内存空间。注意，HotSpot虚拟机的栈容量是不可以动态扩展的，所以在HotSpot虚拟机上是不会由于虚拟机栈无法扩展而导致outOfMemoryError异常——只要线程申请栈空间成功了就不会OOM，但是如果申请时就失败，仍然是会出现OOM异常的。
 
 **本地方法栈：**一些带有 native 关键字的方法需要JAVA 去调用本地的C或者C++方法。和虚拟机栈类似，本地方法被执行的时候，会创建一个栈帧压入本地方法栈，方法执行完毕后出栈，也会出现StackOverflowError和OutOfMemoryError。
+
 #### 堆-GC堆内存分配与回收
 Java堆主要是存放对象实例，几乎所有的对象实例以及数组都在这里分配内存。堆这里最容易出现的就是 OutOfMemoryError。因为堆不需要连续内存，并且可以动态增加其内存，扩展失败会抛出OutOfMemoryError 异常。查看堆内存占用情况jmap - heap 进程id，jconsole 工具。
 Java 堆是垃圾收集器管理的主要区域，也被称作 GC 堆（Garbage Collected Heap）。从分代垃圾收角度，Java堆还新生代和老年代；新生代包括Eden、Survivor。这样划分的目的是更好地回收内存，或者更快地分配内存。
 垃圾回收的理论基础：绝大多数的对象都是“朝生夕灭”的，既创建不久即可消亡。熬过越多此垃圾回收过程的对象就越难以消亡。
-![](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661331138307-a3da5681-2428-45ec-bebd-1a751d93efd8.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&height=230&id=iHrBU&originHeight=621&originWidth=1348&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=u75bbaf1e-8926-4f3c-b5ec-cd5a1b890b8&title=&width=500)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/image-20221022215206190.png" alt="image-20221022215206190" style="zoom: 43%;" />
 
 - 大多数情况下，对象在新生代中 eden 区分配。当 eden 区内存满了以后，触发一次 Minor GC。没有死亡的对象，年龄+1，存放到from区域。
 - 当Eden再次满了以后再次触发一次Minor GC，没有死亡的对象复制到to区域，from区域没有死亡的对象也复制到to区域，年龄+1。之后每一次Minor GC都会出发一次from和to的交换，哪个区域是空的那个区域就是to。
@@ -62,14 +63,14 @@ Java 堆是垃圾收集器管理的主要区域，也被称作 GC 堆（Garbage 
 用于存放已被加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。
 **1.8以前用永久代实现**
 JDK1.7字符串常量池和静态变量从永久代移动了Java堆中。主要原因是永久代的 GC 回收效率太低，只有在整堆收集 (Full GC)的时候才会被执行 GC。Java 程序中通常会有大量的被创建的字符串等待回收，将字符串常量池放到堆中，能够更高效及时地回收字符串内存。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661331710758-175dbcaa-8c3b-4809-87a0-95204d187883.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=254&id=u5e3075ef&name=image.png&originHeight=601&originWidth=931&originalType=binary&ratio=1&rotation=0&showTitle=false&size=443103&status=done&style=none&taskId=ueb488f52-3a2c-4bfa-8fbe-903cacc6cb4&title=&width=393.5)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661331710758-175dbcaa-8c3b-4809-87a0-95204d187883.png" alt="image.png" style="zoom: 50%;" />
 **1.8用元空间实现**
 用元空间实现原因：
 
 - 整个永久代有一个 JVM 本身设置的固定大小上限，无法进行调整，而元空间使用的是直接内存，受本机可用内存的限制，虽然元空间仍旧可能溢出，但是比原来出现的几率会更小。当元空间溢出时会得到如下错误：java.lang.OutOfMemoryError: MetaSpace
 - 元空间里面存放的是类的元数据，这样加载多少类的元数据由系统的实际可用空间来控制，能加载的类就更多了。
 
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661331758022-109614f2-7f61-4204-a393-86bb4e258b6d.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=273&id=uc7aa9b9c&name=image.png&originHeight=601&originWidth=931&originalType=binary&ratio=1&rotation=0&showTitle=false&size=493551&status=done&style=none&taskId=u744353c1-53cf-4ee6-957f-5f64916932a&title=&width=423.5)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661331758022-109614f2-7f61-4204-a393-86bb4e258b6d-20221022215411112.png" alt="image.png" style="zoom:50%;" />
 **回收方法区**
 方法区垃圾收集的“性价比”通常是比较低的。《Java虚拟机规范》不要求虚拟机在方法区中实现垃圾收集。但目前垃圾回收器也是会回收方法区的。方法区主要回收两部分内容：废弃常量和无用的类。
 回收废弃常量与回收Java堆中的对象非常类似。比如一个字符串“abc”已经进入常量池中,但是当前系统没有任何一个String对象引用常量池中的“abc"常量，也没有其他地方引用这个常量，如果这时发生内存回收，而且必要的话，这个“abc”常量就会被系统清理出常量池。常量池中的其他类(接口)、方法、 字段的符号引用也与此类似。
@@ -88,7 +89,8 @@ JDK1.7字符串常量池和静态变量从永久代移动了Java堆中。主要�
 #### 如何判断对象是否可被回收？
 **引用计数法**：当对象被引用一次计数器加1，对象失去引用计数器减1，计数器为0是就可以判断对象死亡了。这种算法简单高效，但是对于循环引用或其他复杂情况，需要更多额外的开销，因此Java几乎不使用该算法。
 **可达性分析算法**：所谓可达性分析是指，从GCRoots对象一直向下搜索（顺藤摸瓜），节点所走过的路径称为引用链，当一个对象到 GC Roots 没有任何引用链相连的话，则证明此对象是不可用的，需要被回收。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661332182301-1f553690-d9dc-4d25-97a7-c0500e18212a.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=225&id=lhRwr&name=image.png&originHeight=450&originWidth=651&originalType=binary&ratio=1&rotation=0&showTitle=false&size=86255&status=done&style=none&taskId=u4b57a388-9a01-4f70-9248-ba2ef59b4c3&title=&width=325.5)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661332182301-1f553690-d9dc-4d25-97a7-c0500e18212a.png" alt="image.png" style="zoom:43%;" />
+
 #### 哪些对象可以作为 GC Roots 呢？
 **原因：GC Roots只会引⽤其他对象，⽽不会被其他对象引⽤。**
 
@@ -106,36 +108,37 @@ JDK1.7字符串常量池和静态变量从永久代移动了Java堆中。主要�
 注意:任何一个对象finalize方法只会被系统调用一次
 #### 垃圾收集算法
 **标记-清除算法：**首先标记出所有需要被回收的对象，然后对标记的对象进行统一清除，清空对象所占用的内存区域。缺点：一是执行效率不可控。如果堆中大部分的对象都可回收的，收集器要执行大量的标记、收集操作。二是产生了许多内存碎片。被回收后的区域内存并不是连续的，当有大对象要分配而找不到满足大小的空间时，要触发下一次垃圾收集。
-![](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661332871559-065029df-14fe-4e5b-9917-d2f56c815d02.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&height=328&id=rh0l3&originHeight=454&originWidth=528&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=u4463f2d7-10cd-4b51-9458-07f3b96c506&title=&width=382)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661332871559-065029df-14fe-4e5b-9917-d2f56c815d02.png" style="zoom:43%;" />
 **标记-复制算法：**将内存分为大小相同的两块，每次使用其中一块。当这一块的内存使用完后，就将还存活的对象复制到另一块去，然后再把使用的空间一次清理掉。这样就使每次的内存回收都是对内存区间的一半进行回收。优点：不会产生内存碎片。缺点：预留一半的内存区域未免有些浪费了，并且如果内存中大量的是存活状态，只有少量的垃圾对象，收集器要执行更多次的复制操作才能释放少量的内存空间，得不偿失。
 **标记-整理算法：**标记过程与“标记-清除”算法一样，但是在整理阶段，算法将存活的对象向内存空间的一端移动，然后将存活对象边界以外的空间全部清空。优点：没有内存碎片问题。缺点：整理过程会产生内存地址移动，效率可能偏低。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661332942168-6cf36a28-bf08-4dfd-a1f0-bd08d5e2c351.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=296&id=ub2d84740&name=image.png&originHeight=724&originWidth=714&originalType=binary&ratio=1&rotation=0&showTitle=false&size=22985&status=done&style=none&taskId=udc50bc90-39eb-4550-80de-3c355f5b44e&title=&width=292)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/image-20221022220325909.png" alt="image-20221022220325909" style="zoom:50%;" />
 **分代收集算法：**现在的商业虚拟机采用分代收集算法，它根据对象存活周期将内存划分为几块，不同块采用适当的收集算法。一般将java堆分为新生代和老年代，这样我们就可以根据各个年代的特点选择合适的垃圾收集算法。比如在新生代中，每次收集都会有大量对象死去，所以可以选择”标记-复制“算法，只需要付出少量对象的复制成本就可以完成每次垃圾收集。而老年代的对象存活几率是比较高的，而且没有额外的空间对它进行分配担保，所以我们必须选择“标记-清除”或“标记-整理”算法进行垃圾收集。
+
 #### 垃圾收集器
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661333398469-0cebcffd-73ec-4e4e-9f4a-495ac91bf940.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=229&id=ub0a89c17&name=image.png&originHeight=467&originWidth=1060&originalType=binary&ratio=1&rotation=0&showTitle=false&size=135888&status=done&style=none&taskId=u56aec75b-4bb2-4123-aab7-c61c54c1ea5&title=&width=519)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/image-20221022220348252.png" alt="image-20221022220348252" style="zoom:50%;" />
 
 - 新生代收集器：Serial、ParNew、Parallel Scavenge
 - 老年代收集器：Serial Old、Parallel Old、CMS
 - 回收整个Java堆（新生代和老年代）：G1收集器
 
 **Serial和Serial Old收集器**
-![](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661333071998-d8afe077-1ee5-456f-92f5-3543be9d09ee.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&height=232&id=GbeCG&originHeight=262&originWidth=754&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=u4237482f-da16-482d-a2b0-7682d2ebd66&title=&width=669)
+<img src="/Users/ivem/Library/Application Support/typora-user-images/image-20221022220415524.png" alt="image-20221022220415524" style="zoom:50%;" />
 
 - Serial和Serial Old是串行收集器，其余都是并行收集器。
 - Serial最早诞生的垃圾收集器，以单线程方式进行垃圾收集。简单高效，在单个CPU环境下，由于没有线程交互的开销，单线程也能很高效地进行收集。但是内存大时STW时间会很长。
 - SerialOld收集器是Serial收集器的老年代版本，主要有两大用途：在JDK1.5以及版本中与Parallel Scanvenge收集器搭配使用。作为CMS收集器的后备方案。
 
 **ParNew收集器：**ParNew是Serial收集器的多线程版本，是 Server场景下默认的新生代收集器。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661333146474-5b75fa47-65f8-47fb-ad0e-4db0833c6689.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=282&id=ubd32e668&name=image.png&originHeight=563&originWidth=730&originalType=binary&ratio=1&rotation=0&showTitle=false&size=241260&status=done&style=none&taskId=u687719c2-6d2f-4aa3-881e-51609d31336&title=&width=365)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/image-20221022220435909.png" alt="image-20221022220435909" style="zoom:33%;" />
 **Parallel Scavenge和Parallel Old收集器：**
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661333205063-f83adbb7-0574-464f-b943-d3ba792f035d.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=164&id=uba16c73b&name=image.png&originHeight=290&originWidth=841&originalType=binary&ratio=1&rotation=0&showTitle=false&size=174244&status=done&style=none&taskId=uf6ce4356-5f4d-43aa-86e1-5f435c972ed&title=&width=475.5)
+<img src="/Users/ivem/Library/Application Support/typora-user-images/image-20221022220459550.png" alt="image-20221022220459550" style="zoom: 50%;" />
 
 - 多线程新生代收集器，通过一个开关参数打开GC自适应的调节策略，就不需要手工指定新生代的大小（-Xmn）、Eden 和 Survivor 区的比例、晋升老年代对象年龄等细节参数了。虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最合适的停顿时间或者最大的吞吐量（吞吐量指 CPU 用于运行用户程序的时间占总时间的比值）。
 - 停顿时间越短就越适合需要与用户交互的程序，良好的响应速度能提升用户体验。而高吞吐量则可以高效率地利用 CPU 时间，尽快完成程序的运算任务，适合在后台运算而不需要太多交互的任务。
 - Parallel Old是Parallel Scavenge 收集器的老年代版本。在注重吞吐量以及 CPU资源敏感的场合，可以优先考虑 Parallel Scavenge 加Parallel Old 收集器。
 #### CMS收集器
 CMS收集器的目标是做到最短回收停顿时间，当关注应用的响应速度时，可以选择这个收集器。CMS收集器是基于标记清除算法来实现的，主要包含以下四个过程：
-![](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661333243616-cd30aa79-6a84-4604-ae4a-f4733c2c9deb.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&height=216&id=JK03n&originHeight=319&originWidth=852&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=u83451b89-4947-437d-a282-8c2583aba7f&title=&width=578)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661333243616-cd30aa79-6a84-4604-ae4a-f4733c2c9deb.png" alt="img" style="zoom:50%;" />
 
 - 初始标记：标记GC Roots 能直接关联到的对象。
 - 并发标记：用户线程和垃圾回收线程同时进行。从GC Roots开始对堆中对象进行可达性分析，找出存活对象。在整个回收过程中耗时最长。
@@ -153,7 +156,7 @@ CMS收集器的目标是做到最短回收停顿时间，当关注应用的响�
 - CMS使用标记-清除算法会产生空间碎片，当碎片过多，往往出现老年代空间剩余，但无法找到足够大连续空间来分配当前对象，不得不提前触发一次 Full GC。
 #### G1收集器
 被官方称为是全功能的垃圾收集器，也是JDK9之后服务端默认的垃圾收集器。G1把堆划分成多个大小相等的独立区域，新生代和老年代不再物理隔离。
-![](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661333512727-c5cf7135-1c5f-4192-b868-263156b7e4e3.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&height=243&id=koj3M&originHeight=430&originWidth=1032&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=u91110e72-e07f-424e-a47d-a1d6e3a5ece&title=&width=584)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661333512727-c5cf7135-1c5f-4192-b868-263156b7e4e3.png" style="zoom:50%;" />
 GC的整个操作过程非常复杂，但是思想比较简单。它将整个Java堆分成大小相等的独立区域Region，所有的标记操作，复制操作，整理操作都是基于这个Region的。从而达到将垃圾回收行为化整为零，分而治之。虽然它遵循了分代的概念，但并没有将哪块内存属于哪个分代固定下来，而是根据每个region中的特性来决定region扮演的角色。G1收集器的执行可以分为以下几个步骤：
 
 - 初始标记，
@@ -172,7 +175,7 @@ GC的整个操作过程非常复杂，但是思想比较简单。它将整个Jav
 - 因为Region的个数很多，每个Region还需要一份卡表来维护信息，所以G1的内存要高于CMS
 - G1在运行效率上由于算法比CMS更加负载，所以执行负载也要大一些
 ### 类加载和创建对象
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661333751575-2c615585-3650-4e07-aa9a-9d679fb1bd59.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=224&id=ufeffb634&name=image.png&originHeight=447&originWidth=908&originalType=binary&ratio=1&rotation=0&showTitle=false&size=43082&status=done&style=none&taskId=u6a1d0e6c-ddf8-436b-bff0-79da22381a8&title=&width=454)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661333751575-2c615585-3650-4e07-aa9a-9d679fb1bd59.png" alt="image.png" style="zoom:50%;" />
 **类加载过程：**
 
 - **加载**：把class字节码文件从各个来源通过类加载器装载入内存（方法区）中
@@ -190,7 +193,7 @@ GC的整个操作过程非常复杂，但是思想比较简单。它将整个Jav
 - 执行init方法执行init方法(构造方法)把对象按照程序员的意愿进行初始化。
 - 最后有类似于Child c = new Child()形式语句的话，在栈区定义Child类型引用变量c，然后将堆区对象的地址赋值给c。
 ### 类加载器
-![](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661334373895-1b0ac0e6-4446-4a76-ab32-03d6984b537d.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&height=276&id=O5fKB&originHeight=483&originWidth=820&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=ue0867d0f-5de7-4307-a00e-962b841d272&title=&width=468)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661334373895-1b0ac0e6-4446-4a76-ab32-03d6984b537d.png" style="zoom:57%;" />
 
 - 类加载就是将一个.class字节码文件实例化成class对象并进行相关初始化过程。ClassLoader即类加载器，负责将类加载到JVM。在Java虚拟机外部实现，以便让应用程序自己决定如何去获取所需要的类。
 - JVM加载class文件到内存的两种方式：隐式加载：JVM自动加载所需要的类到内存中。显示加载：通过使用ClassLoader加载一个类到内存中。
@@ -212,7 +215,7 @@ GC的整个操作过程非常复杂，但是思想比较简单。它将整个Jav
 
 1. SPI（Service Provider Inteface）是一种服务发现机制，比如JDBC驱动的接口有启动类加载，启动类加载器是无法加载实现类的，于是SPI将双亲委派模型中应用程序类加载器->引导类加载器的委派，变成了引导类加载器->应用程序类加载器的委派，这样就打破了双亲委派的类加载模式。
 
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661334493210-6dd0dbc9-465b-4f23-82f4-b5e51e5e7938.png#clientId=uc40fe5c8-ebe2-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=249&id=uabd94b8c&name=image.png&originHeight=498&originWidth=904&originalType=binary&ratio=1&rotation=0&showTitle=false&size=211648&status=done&style=none&taskId=uedc885f0-2950-443a-9faa-3d750a55ade&title=&width=452)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/1661334493210-6dd0dbc9-465b-4f23-82f4-b5e51e5e7938.png" alt="image.png" style="zoom:67%;" />
 
 2. 继承ClassLoader重写loadClass方法
 ### OOM问题

@@ -269,7 +269,7 @@ public final class String implements java.io.Serializable, Comparable<String>, C
 }
 ```
 因此，当对String类对象进行修改时，会生成一个新的对象，然后将原来指针指向新的String对象
-![](https://cdn.nlark.com/yuque/0/2022/png/26499320/1646833179398-5a18e88d-1742-4286-b993-64de5f97a26d.png#crop=0&crop=0&crop=1&crop=1&from=url&height=210&id=yjWcZ&margin=%5Bobject%20Object%5D&originHeight=320&originWidth=728&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=&width=477)
+![image-20221022215717880](https://raw.githubusercontent.com/ivemcel/pictures/main/image-20221022215717880.png)
 不可变对象的好处：
 
 - 线程安全。同一个字符串实例可以被多个线程共享，因为字符串不可变，本身就是线程安全的。 
@@ -481,7 +481,7 @@ public static void main(String[] args) throws Exception {
 - JDK自带序列化方法。类实现Serializable接口，就通过ObjectOutputStream类将对象变成byte[]字节数组。
 - 使用fastJSON将对象变成JSON格式的数据， 可读性强
 ### Error和Exception
-![](https://cdn.nlark.com/yuque/0/2022/png/26499320/1647837532712-b6f37eb7-9e80-4315-9571-6d91ba35883b.png#clientId=u43f98e5d-a6e8-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=317&id=uee6b9ec0&margin=%5Bobject%20Object%5D&originHeight=548&originWidth=861&originalType=url&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=ubb9f2aaa-6590-4cd5-9b1b-61835212c2a&title=&width=498)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/image-20221022215815925.png" alt="image-20221022215815925" style="zoom:33%;" />
 **Error：系统内部错误，运行时报错，不能处理**
 **Exception**
 运行时异常:一般是由程序逻辑错误引起的，会由Java虚拟机自动抛出并自动捕获。
@@ -562,13 +562,13 @@ Buffer缓冲区是一个对象，它包含一些要写入或者要读出的数�
 
 **Channel通道**
 通道是在实体（文件、socket等）和缓冲区之间有效传输数据的媒介。也就是说，通道是Java NIO提供的一座桥梁，用于我们的程序和操作系统底层I/O服务进行交互。通道是双向的，流是单向的。在Java NIO中，通道Channel相当于操作系统的内核空间缓冲区，而缓冲区Buffer相当于操作系统的用户空间缓冲区。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661314401266-af562841-bbc0-4c2b-86b8-f0d27afcffac.png#clientId=u6c17c804-d532-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=174&id=u42c3dd87&margin=%5Bobject%20Object%5D&name=image.png&originHeight=348&originWidth=921&originalType=binary&ratio=1&rotation=0&showTitle=false&size=26132&status=done&style=none&taskId=ud04b68e7-c5f5-4e7b-a751-9c04309ddec&title=&width=460.5)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/image-20221022215918140.png" alt="image-20221022215918140" style="zoom:43%;" />
 **Selector选择器**
 Selector选择器用于采集各个通道的状态/事件（注：多个Channel以事件的方式可以注册到同一个Selector)，如果有事件发生，便获取事件然后针对每个事件进行相应的处理。这样就可以只用一个线程去管理多个通道，只有在连接/通道 真正有读写事件发生时，才会进行读写，就大大地减少了系统开销。
 
 - ServerSocketChannel 是一个可以监听新进来的TCP连接的通道
 - SocketChannel，网络 IO 通道，具体负责进行读写操作。  
-                                 ![](http://cdn.processon.com/628250397d9c08074fdb48d8?e=1652710985&token=trhI0BY8QfVrIGn9nENop6JAc6l5nZuxhjQ62UfM:YVfhgAllE3fy5JjQEZsAeqUaEFg=#crop=0&crop=0&crop=1&crop=1&height=370&id=jROAR&originHeight=777&originWidth=948&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=&width=451)
+                             <img src="https://raw.githubusercontent.com/ivemcel/pictures/main/images" alt="img" style="zoom: 50%;" />
 
 SelectionKey，表示 Selector 和网络通道的注册关系, 共四种:
 
@@ -669,6 +669,7 @@ public enum Singleton{
 
 - 静态代理只能为一个类服务，如果代理的方法很多，要为每一种方法都进行代理，代码显得非常繁琐冗余。
 - 如果接口增加一个方法，除了所有实现类需要实现这个方法外，所有代理类也需要实现此方法，违背了开闭原则。
+
 ```java
 public interface Rent {
     void rent();
@@ -702,47 +703,50 @@ public class Main {
 }
 ```
 
-
-```
 **动态代理**是在运行时动态生成的，即编译完成后没有实际的class文件，而是在运行时动态生成类字节码，并加载到JVM中。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661495553474-3e80d4eb-8770-45a0-902a-b7ea334b9e2a.png#clientId=u1f2ff9f9-0031-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=263&id=qn926&name=image.png&originHeight=1044&originWidth=1192&originalType=binary&ratio=1&rotation=0&showTitle=false&size=111176&status=done&style=none&taskId=u072c03f2-ad7d-4102-9acc-ea4aa9ef940&title=&width=300)
+<img src="https://raw.githubusercontent.com/ivemcel/pictures/main/image-20221022220152127.png" alt="image-20221022220152127" style="zoom:50%;" />
 **JDK动态代理-基于接口的动态代理**
 JDK动态代理是利用反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。核心是实现InvocationHandler接口，使用invoke()方法进行面向切面的处理，调用相应的通知。
 
 - 定义一个接口Rent及其实现类ZhangSan；
+
 - 定义一个AgentHandler 实现InvocationHandler接口并重写其invoke方法，在 invoke 方法中我们会调用原生方法（被代理类的方法）并自定义一些处理逻辑；
+
 - 通过 Proxy.newProxyInstance(ClassLoader loader,Class<?>[] interfaces,InvocationHandler h) 方法帮我们执行了生成代理类——获取构造器——创建代理对象这三步；
    - 生成代理类: Class<?> cl = getProxyClass0(loader, intfs);
    - 获取构造器: final Constructor<?> cons = cl.getConstructor(constructorParams);
    - 创建代理对象: cons.newInstance(new Object[]{h});
+   
 - 当代理对象生成后，最后由InvocationHandler的invoke()方法调用目标方法:
-​```java
-public class AgentHandler implements InvocationHandler {
-    private Object obj;
 
-    public AgentHandler(Object obj){
-        this.obj = obj;
-    }
+   ```java
+   public class AgentHandler implements InvocationHandler {
+       private Object obj;
+   
+       public AgentHandler(Object obj){
+           this.obj = obj;
+       }
+   
+       @Override
+       public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+           if(method.getName().equals("rent")){
+               System.out.println("租房子啦");
+               method.invoke(obj, args);
+               System.out.println("签合同啦");
+           }
+           return null;
+       }
+   }
+   public class Main {
+       public static void main(String[] args) {
+           AgentHandler agentHandler = new AgentHandler(new ZhangSan());
+           Rent rent = (Rent)Proxy.newProxyInstance(Main.class.getClassLoader(), new Class[]{Rent.class}, agentHandler);
+           rent.rent();
+       }
+   }
+   ```
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if(method.getName().equals("rent")){
-            System.out.println("租房子啦");
-            method.invoke(obj, args);
-            System.out.println("签合同啦");
-        }
-        return null;
-    }
-}
-public class Main {
-    public static void main(String[] args) {
-        AgentHandler agentHandler = new AgentHandler(new ZhangSan());
-        Rent rent = (Rent)Proxy.newProxyInstance(Main.class.getClassLoader(), new Class[]{Rent.class}, agentHandler);
-        rent.rent();
-    }
-}
-```
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/26499320/1661495767231-8a3cfba6-23b0-4136-a85d-8e54f5b4d5b5.png#clientId=u1fd4eb79-51bb-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=362&id=tduhe&name=image.png&originHeight=724&originWidth=1500&originalType=binary&ratio=1&rotation=0&showTitle=false&size=528449&status=done&style=none&taskId=ud57d6a7f-3a35-4ba4-9a2b-a9102f3297f&title=&width=750)
+<img src="https://cdn.nlark.com/yuque/0/2022/png/26499320/1661495767231-8a3cfba6-23b0-4136-a85d-8e54f5b4d5b5.png?x-oss-process=image%2Fresize%2Cw_1500%2Climit_0" alt="image.png" style="zoom:50%;" />
 **为什么JDK动态代理只能代理接口？**通过反射生成代理类的字节码文件并创建代理对象。生成的代理类已经extends了Proxy，而java是不允许多重继承的，但是允许实现多个接口，所以JDK动态代理只能代理接口。
 JDK 动态代理存在的问题是其只能代理实现了接口的类，而没有实现接口的类就需要cglib动态代理。
 **CGLib动态代理-基于类的动态代理**
@@ -750,6 +754,7 @@ CGLib(Code Generation Library)是一个字节码生成库，它允许我们在�
 cglib动态代理是利用asm开源包，对代理对象类的class文件加载进来，通过修改其字节码生成子类来处理。核心是实现MethodInterceptor接口，使用intercept()方法进行面向切面的处理，调用相应的通知。
 cglib是针对类来实现代理的，原理是对指定的目标类生成一个子类，并覆盖其中方法实现增强，但因为采用的是继承，所以不能对final修饰的类进行代理。
 总结来讲，动态代理非常灵活，可以根据需求为已经定义好的类添加功能。Spring AOP的背后就是动态代理，对于被代理类实现接口时，Spring AOP使用JDK动态代理，也可以使用CGlib。如果被代理对象没有实现接口，那么只能使用CGLIB来实现动态代理了。CGLIB本身是通过ASM框架将被代理类的class字节码文件加载进行并进行修改生成被代理类的子类来实现动态代理。
+
 ```java
 public class AgentInterceptor implements MethodInterceptor {
     private Object obj;

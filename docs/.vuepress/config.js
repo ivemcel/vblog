@@ -9,13 +9,13 @@ module.exports = {
     lastUpdated: '更新时间', // string | boolean
     nav: [
       { text: '首页', link: '/' },
-      { text: 'Java', 
-        items: [
-          { text: 'Java基础', link: '/Java/Java基础/' },
-          { text: 'Java容器', link: '/Java/Java容器/' },
-          { text: 'Java并发', link: '/Java/Java并发/' },
-          { text:'Java虚拟机', link: '/Java/Java虚拟机' },
-        ] 
+      { text: 'Java', link: '/Java'
+        // items: [
+        //   { text: 'Java基础', link: '/Java/Java基础/' },
+        //   { text: 'Java容器', link: '/Java/Java容器/' },
+        //   { text: 'Java并发', link: '/Java/Java并发/' },
+        //   { text:'Java虚拟机', link: '/Java/Java虚拟机' },
+        // ] 
       },
       { text: '计算机网络', link: '/计算机网络/TCPIP体系结构' },
       { text: '操作系统', link: '/操作系统/操作系统概述' },
