@@ -1,8 +1,8 @@
 ---
 title: Java容器
 date: 2022-10-10
-# sidebar: 'auto'
-# sidebarDepth: 2
+sidebar: 'auto'
+sidebarDepth: 2
 categories:
  - Java
 tags:

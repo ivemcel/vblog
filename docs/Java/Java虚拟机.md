@@ -1,3 +1,15 @@
+---
+title: Java虚拟机
+date: 2022-10-10
+sidebar: 'auto'
+sidebarDepth: 2
+categories:
+ - Java
+tags:
+- Java虚拟机
+author: ivem
+publish: true
+---
 ### 运行时数据区域
 #### 程序计数器
 
