@@ -121,7 +121,7 @@ export default defineConfig({
     lastUpdated: "最近更新",
 
     // GitHub 仓库位置
-    repo: "liyupi/codefather",
+    repo: "ivemcel/vblog",
     docsBranch: "master",
 
     // 编辑链接
